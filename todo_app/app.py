@@ -1,4 +1,6 @@
 from flask import Flask
+import flask
+from flask.templating import render_template
 
 from todo_app.flask_config import Config
 
@@ -8,7 +10,7 @@ app.config.from_object(Config)
 
 @app.route('/')
 def index():
-    return 'Hello World!'
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
