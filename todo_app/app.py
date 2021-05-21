@@ -1,5 +1,5 @@
 from flask.globals import request
-from todo_app.data.session_items import add_item, get_item, get_items, save_item
+from todo_app.data.session_items import add_item, delete_item, get_item, get_items, save_item
 from flask import Flask, redirect
 from flask.templating import render_template
 from todo_app.flask_config import Config
@@ -26,6 +26,11 @@ def update_todo(id):
     item = get_item(id)
     item['status'] = 'Complete' if status == 'Complete' else 'Not Started'
     save_item(item)
+    return redirect('/')
+
+@app.route('/todos/<id>/delete', methods=['POST'])
+def remove_todo(id):
+    delete_item(id)
     return redirect('/')
 
 
