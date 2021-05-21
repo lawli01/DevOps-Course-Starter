@@ -22,7 +22,17 @@
     <h2>Items</h2>
     <ul class="list-group mb-4">
       {% for item in items %}
-      <li class="list-group-item">{{item.title}}</li>
+      <form action="todos/{{item.id}}" method="post">
+        <li class="list-group-item">
+          {{item.title}}
+          <div class="form-check float-right">
+            <input class="form-check-input" type="checkbox" name="status" value="Complete" onChange="this.form.submit()" {% if item.status=='Complete' %} checked {% endif %}>
+            <label class="form-check-label" for="flexCheckDefault">
+              Completed
+            </label>
+          </div>
+        </li>
+      </form>
       {% endfor %}
     </ul>
   </div>
