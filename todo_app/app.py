@@ -11,8 +11,8 @@ app.config.from_object(Config)
 @app.route('/')
 def index():
     items = get_items()
-    print(items)
-    return render_template('index.html', items=items)
+    sorted_by_status = sorted(items, key=lambda item: item['status'], reverse=True)
+    return render_template('index.html', items=sorted_by_status)
 
 @app.route('/todos', methods=['POST'])
 def add_todo():
