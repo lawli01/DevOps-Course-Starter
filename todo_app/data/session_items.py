@@ -66,9 +66,7 @@ def delete_item(id):
     """
     existing_items = get_items()
     item = next((item for item in existing_items if item['id'] == int(id)), None)
-    print(item)
     if (item != None):
-        print('remove')
         existing_items.remove(item)
         session['items'] = existing_items
 

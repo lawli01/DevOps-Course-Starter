@@ -1,7 +1,5 @@
-from flask.globals import request
 from todo_app.data.session_items import add_item, delete_item, get_item, get_items, save_item
-from flask import Flask, redirect
-from flask.templating import render_template
+from flask import Flask, redirect, render_template, request
 from todo_app.flask_config import Config
 
 app = Flask(__name__)
