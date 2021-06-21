@@ -1,3 +1,4 @@
+from todo_app.data.item import ItemStatus
 from todo_app.data.trello_items import get_items, add_item, delete_item, get_item, save_item
 from flask import Flask, redirect, render_template, request
 from todo_app.flask_config import Config
@@ -9,7 +10,7 @@ app.config.from_object(Config)
 @app.route('/')
 def index():
     items = get_items()
-    sorted_by_status = sorted(items, key=lambda item: item['status'], reverse=True)
+    sorted_by_status = sorted(items, key=lambda item: item.status, reverse=True)
     return render_template('index.html', items=sorted_by_status)
 
 @app.route('/todos', methods=['POST'])
@@ -22,7 +23,7 @@ def add_todo():
 def update_todo(id):
     status = request.form.get('status')
     item = get_item(id)
-    item['status'] = 'Complete' if status == 'Complete' else 'Not Started'
+    item.status = ItemStatus.COMPLETE if status == 'Complete' else ItemStatus.NOT_STARTED
     save_item(item)
     return redirect('/')
 
