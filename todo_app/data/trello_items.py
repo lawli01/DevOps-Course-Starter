@@ -54,6 +54,12 @@ def create_todo_item(item: dict):
     if response.status_code != 200:
         raise ValueError(f"Failed to create todo item for '{item['title']}'. Received status code {response.status_code}")
 
+def remove_item(id: str):
+    response = requests.delete(f'{base_uri}/cards/{id}', params=query_params)
+    if response.status_code != 200:
+        raise ValueError(f"Failed to delete todo item with id '{id}'. Received status code {response.status_code}")
+
+
 
 def get_items():
     """
@@ -73,7 +79,7 @@ def get_items():
 
     return to_do_items + in_progress_items + complete_items
 
-def get_item(id):
+def get_item(id: str):
     """
     Fetches the saved item with the specified ID.
 
@@ -84,10 +90,10 @@ def get_item(id):
         item: The saved item, or None if no items match the specified ID.
     """
     items = get_items()
-    return next((item for item in items if item['id'] == int(id)), None)
+    return next((item for item in items if item['id'] == id), None)
 
 
-def add_item(title):
+def add_item(title: str):
     """
     Adds a new item with the specified title to the todo list.
 
@@ -106,7 +112,7 @@ def add_item(title):
     return item
 
 
-def delete_item(id):
+def delete_item(id: str):
     """
     Deletes the saved item with the specified ID.
 
@@ -116,12 +122,8 @@ def delete_item(id):
     Returns:
         item: The saved item, or None if no items match the specified ID.
     """
-    existing_items = get_items()
-    item = next((item for item in existing_items if item['id'] == int(id)), None)
-    if (item != None):
-        existing_items.remove(item)
-        session['items'] = existing_items
-
+    item = get_item(id)
+    remove_item(id)
     return item
 
 
