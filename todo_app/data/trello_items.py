@@ -1,9 +1,8 @@
-from typing import List
-from flask import session
 import os
-import requests
-import json
+from typing import List
 
+import requests
+from flask import session
 from flask.globals import request
 
 _DEFAULT_ITEMS = [
@@ -29,11 +28,15 @@ def get_todo_board_id():
 
     return todo_board['id']
 
-def get_list_or_throw(lists: List[dict], list_name: str):
+def get_lists():
+    todo_board_id = get_todo_board_id()
+    return requests.get(f'{base_uri}/boards/{todo_board_id}/lists', params=query_params).json()
+
+def get_list_id_or_throw(lists: List[dict], list_name: str):
     list = next(iter([x for x in lists if x['name'] == list_name]), None)
     if (list is None):
         raise ValueError(f"Could not find list '{list_name}'. Make sure you have this configured on your trello board")
-    return list
+    return list['id']
 
 def get_items_from_list(list_id: str, status: str):
     cards = requests.get(f'{base_uri}/lists/{list_id}/cards', params=query_params).json()
@@ -43,18 +46,14 @@ def get_items_from_list(list_id: str, status: str):
         'title': card['name']
     } for card in cards]
 
-def get_items_from_todo_board():
-    todo_board_id = get_todo_board_id()
-    configured_lists = requests.get(f'{base_uri}/boards/{todo_board_id}/lists', params=query_params).json()
-    to_do_list_id = get_list_or_throw(configured_lists, "To Do")['id']
-    doing_list_id = get_list_or_throw(configured_lists, "Doing")['id']
-    done_list_id = get_list_or_throw(configured_lists, "Done")['id']
+def create_todo_item(item: dict):
+    lists = get_lists()
+    to_do_list_id = get_list_id_or_throw(lists, "To Do")
+    response = requests.post(f'{base_uri}/cards', params={**query_params, 'name': item['title'], 'idList': to_do_list_id})
 
-    to_do_items = get_items_from_list(to_do_list_id, 'Not Started')
-    in_progress_items = get_items_from_list(doing_list_id, 'In Progress')
-    complete_items = get_items_from_list(done_list_id, 'Complete')
+    if response.status_code != 200:
+        raise ValueError(f"Failed to create todo item for '{item['title']}'. Received status code {response.status_code}")
 
-    return to_do_items + in_progress_items + complete_items
 
 def get_items():
     """
@@ -63,8 +62,16 @@ def get_items():
     Returns:
         list: The list of saved items.
     """
-    return session.get('items', _DEFAULT_ITEMS.copy())
+    lists = get_lists()
+    to_do_list_id = get_list_id_or_throw(lists, "To Do")
+    doing_list_id = get_list_id_or_throw(lists, "Doing")
+    done_list_id = get_list_id_or_throw(lists, "Done")
 
+    to_do_items = get_items_from_list(to_do_list_id, 'Not Started')
+    in_progress_items = get_items_from_list(doing_list_id, 'In Progress')
+    complete_items = get_items_from_list(done_list_id, 'Complete')
+
+    return to_do_items + in_progress_items + complete_items
 
 def get_item(id):
     """
@@ -82,7 +89,7 @@ def get_item(id):
 
 def add_item(title):
     """
-    Adds a new item with the specified title to the session.
+    Adds a new item with the specified title to the todo list.
 
     Args:
         title: The title of the item.
@@ -90,16 +97,11 @@ def add_item(title):
     Returns:
         item: The saved item.
     """
-    items = get_items()
-
-    # Determine the ID for the item based on that of the previously added item
-    id = items[-1]['id'] + 1 if items else 0
-
-    item = { 'id': id, 'title': title, 'status': 'Not Started' }
+    
+    item = { 'title': title, 'status': 'Not Started' }
 
     # Add the item to the list
-    items.append(item)
-    session['items'] = items
+    create_todo_item(item)
 
     return item
 

@@ -1,5 +1,5 @@
-from todo_app.data.trello_items import get_items_from_todo_board, get_todo_board_id
-from todo_app.data.session_items import add_item, delete_item, get_item, get_items, save_item
+from todo_app.data.trello_items import get_items, add_item
+from todo_app.data.session_items import delete_item, get_item, save_item
 from flask import Flask, redirect, render_template, request
 from todo_app.flask_config import Config
 
@@ -9,7 +9,7 @@ app.config.from_object(Config)
 
 @app.route('/')
 def index():
-    items = get_items_from_todo_board()
+    items = get_items()
     sorted_by_status = sorted(items, key=lambda item: item['status'], reverse=True)
     return render_template('index.html', items=sorted_by_status)
 
