@@ -2,13 +2,6 @@ import os
 from typing import List
 
 import requests
-from flask import session
-from flask.globals import request
-
-_DEFAULT_ITEMS = [
-    { 'id': 1, 'status': 'Not Started', 'title': 'List saved todo items' },
-    { 'id': 2, 'status': 'Not Started', 'title': 'Allow new items to be added' }
-]
 
 query_params = {
     'token': os.environ['TRELLO_API_TOKEN'],
@@ -24,7 +17,7 @@ def get_todo_board_id():
     todo_board = next(iter(boards_filtered_by_name), None)
 
     if (todo_board is None):
-        raise ValueError(f"Could not find configured to do board: {configured_todo_board_name}")
+        raise ValueError(f'Could not find configured to do board: {configured_todo_board_name}')
 
     return todo_board['id']
 
@@ -35,7 +28,7 @@ def get_lists():
 def get_list_id_or_throw(lists: List[dict], list_name: str):
     list = next(iter([x for x in lists if x['name'] == list_name]), None)
     if (list is None):
-        raise ValueError(f"Could not find list '{list_name}'. Make sure you have this configured on your trello board")
+        raise ValueError(f'Could not find list "{list_name}". Make sure you have this configured on your trello board')
     return list['id']
 
 def get_items_from_list(list_id: str, status: str):
@@ -52,13 +45,28 @@ def create_todo_item(item: dict):
     response = requests.post(f'{base_uri}/cards', params={**query_params, 'name': item['title'], 'idList': to_do_list_id})
 
     if response.status_code != 200:
-        raise ValueError(f"Failed to create todo item for '{item['title']}'. Received status code {response.status_code}")
+        raise ValueError(f'Failed to create todo item for "{item["title"]}". Received status code {response.status_code}')
 
 def remove_item(id: str):
     response = requests.delete(f'{base_uri}/cards/{id}', params=query_params)
     if response.status_code != 200:
-        raise ValueError(f"Failed to delete todo item with id '{id}'. Received status code {response.status_code}")
+        raise ValueError(f'Failed to delete todo item with id "{id}"". Received status code {response.status_code}')
 
+def update_item(item: dict):
+    lists = get_lists()
+    to_do_list_id = get_list_id_or_throw(lists, "To Do")
+    doing_list_id = get_list_id_or_throw(lists, "Doing")
+    done_list_id = get_list_id_or_throw(lists, "Done")
+    
+    list_id_to_move_to = None
+    if item['status'] == 'Not Started': list_id_to_move_to = to_do_list_id
+    elif item['status'] == "In Progress": list_id_to_move_to = doing_list_id
+    elif item['status'] == "Complete": list_id_to_move_to = done_list_id
+
+    response = requests.put(f'{base_uri}/cards/{item["id"]}', params={**query_params, 'idList': list_id_to_move_to})#
+
+    if response.status_code != 200:
+        raise ValueError(f'Failed to update todo item with id "{item["id"]}". Received status code {response.status_code}')
 
 
 def get_items():
@@ -134,10 +142,7 @@ def save_item(item):
     Args:
         item: The item to save.
     """
-    existing_items = get_items()
-    updated_items = [item if item['id'] == existing_item['id'] else existing_item for existing_item in existing_items]
-
-    session['items'] = updated_items
+    update_item(item)
 
     return item
 
