@@ -21,7 +21,7 @@
   <div class="col-md-12">
     <h2>Items</h2>
     <ul class="list-group mb-4">
-      {% for item in items %}
+      {% for item in view_model.items %}
         <li class="list-group-item align-items-center d-flex justify-content-between">
           <div class="justify-content-start">
             {{item.title}}

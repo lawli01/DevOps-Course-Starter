@@ -1,3 +1,4 @@
+from todo_app.data.itemsViewModel import ItemsViewModel
 from todo_app.data.item import ItemStatus
 from todo_app.data.trello_items import get_items, add_item, delete_item, get_item, save_item
 from flask import Flask, redirect, render_template, request
@@ -11,7 +12,8 @@ app.config.from_object(Config)
 def index():
     items = get_items()
     sorted_by_status = sorted(items, key=lambda item: item.status, reverse=True)
-    return render_template('index.html', items=sorted_by_status)
+    items_view_model = ItemsViewModel(sorted_by_status)
+    return render_template('index.html', view_model=items_view_model)
 
 @app.route('/todos', methods=['POST'])
 def add_todo():
