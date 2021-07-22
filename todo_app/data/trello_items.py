@@ -11,19 +11,8 @@ query_params = {
 
 base_uri = "https://api.trello.com/1"
 
-def get_todo_board_id() -> str:
-    configured_todo_board_name = os.environ['TRELLO_API_TODO_BOARD_NAME']
-    response = requests.get(f'{base_uri}/members/me/boards', params=query_params).json()
-    boards_filtered_by_name = [x for x in response if x['name'] == configured_todo_board_name]
-    todo_board = next(iter(boards_filtered_by_name), None)
-
-    if (todo_board is None):
-        raise ValueError(f'Could not find configured to do board: {configured_todo_board_name}')
-
-    return todo_board['id']
-
 def get_lists() -> List[dict]:
-    todo_board_id = get_todo_board_id()
+    todo_board_id = os.environ['TRELLO_API_TODO_BOARD_ID']
     return requests.get(f'{base_uri}/boards/{todo_board_id}/lists', params=query_params).json()
 
 def get_list_id_or_throw(lists: List[dict], list_name: str) -> str:
