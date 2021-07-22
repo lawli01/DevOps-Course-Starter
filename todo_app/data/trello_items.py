@@ -32,7 +32,7 @@ def get_list_id_or_throw(lists: List[dict], list_name: str) -> str:
         raise ValueError(f'Could not find list "{list_name}". Make sure you have this configured on your trello board')
     return list['id']
 
-def get_items_from_list(list_id: str, status: str) -> List[Item]:
+def get_items_from_list(list_id: str, status: ItemStatus) -> List[Item]:
     cards = requests.get(f'{base_uri}/lists/{list_id}/cards', params=query_params).json()
     return [Item(id=card['id'], title=card['name'], status=status) for card in cards]
 
@@ -81,9 +81,9 @@ def get_items() -> List[Item]:
     doing_list_id = get_list_id_or_throw(lists, "Doing")
     done_list_id = get_list_id_or_throw(lists, "Done")
 
-    to_do_items = get_items_from_list(to_do_list_id, 'Not Started')
-    in_progress_items = get_items_from_list(doing_list_id, 'In Progress')
-    complete_items = get_items_from_list(done_list_id, 'Complete')
+    to_do_items = get_items_from_list(to_do_list_id, ItemStatus.NOT_STARTED)
+    in_progress_items = get_items_from_list(doing_list_id, ItemStatus.IN_PROGRESS)
+    complete_items = get_items_from_list(done_list_id, ItemStatus.COMPLETE)
 
     return to_do_items + in_progress_items + complete_items
 

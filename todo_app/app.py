@@ -11,8 +11,7 @@ app.config.from_object(Config)
 @app.route('/')
 def index():
     items = get_items()
-    sorted_by_status = sorted(items, key=lambda item: item.status, reverse=True)
-    items_view_model = ItemsViewModel(sorted_by_status)
+    items_view_model = ItemsViewModel(items)
     return render_template('index.html', view_model=items_view_model)
 
 @app.route('/todos', methods=['POST'])
@@ -25,7 +24,7 @@ def add_todo():
 def update_todo(id):
     status = request.form.get('status')
     item = get_item(id)
-    item.status = ItemStatus.COMPLETE if status == 'Complete' else ItemStatus.NOT_STARTED
+    item.status = ItemStatus.COMPLETE if status == 'COMPLETE' else ItemStatus.NOT_STARTED
     save_item(item)
     return redirect('/')
 
