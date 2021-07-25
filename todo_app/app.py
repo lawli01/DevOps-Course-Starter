@@ -2,7 +2,6 @@ from todo_app.data.itemsViewModel import ItemsViewModel
 from todo_app.data.item import ItemStatus
 from todo_app.data.trello_items import get_items, add_item, delete_item, get_item, save_item
 from flask import Flask, redirect, render_template, request
-from todo_app.flask_config import Config
 
 
 def create_app():
@@ -35,9 +34,6 @@ def create_app():
         return redirect('/')
 
     return app
-
-
-
 
 
 if __name__ == '__main__':
