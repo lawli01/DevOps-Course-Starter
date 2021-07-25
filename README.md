@@ -59,10 +59,20 @@ You should see output similar to the following:
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
-## Running the tests
+## Running the integration and unit tests
 
 In visual studio code:
  - Hit ctrl+shift+p and search for "Python: Discover Tests"
  - Configure pytest as the test runner pointing to the ./tests folder
  - Ensure you have the "Python Test Explorer for Visual Studio Code" extension installed
  - You should be able to run the tests now using the test explorer in visual studio code
+
+ Alternatively you can just run the `pytest tests` command once you have activated the python venv
+
+ ## Running the e2e tests
+
+ Prequisites:
+  - Download and install firefox
+  - Download geckodriver and place it in the project root
+
+run `pytest tests_e2e`

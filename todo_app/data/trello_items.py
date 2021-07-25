@@ -1,8 +1,8 @@
 import os
+import uuid
+import requests
 from todo_app.data.item import Item, ItemStatus
 from typing import List, Optional
-
-import requests
 
 def get_query_params(): 
     return {
@@ -11,6 +11,16 @@ def get_query_params():
     }
 
 base_uri = "https://api.trello.com/1"
+
+def create_board() -> str:
+    response = requests.post(f'{base_uri}/boards', params={**get_query_params(), 'name': str(uuid.uuid4())})
+    response.raise_for_status()
+    response_body = response.json()
+    return response_body['id']
+
+def delete_board(id: str):
+    response = requests.delete(f'{base_uri}/boards/{id}', params=get_query_params())
+    response.raise_for_status()
 
 def get_lists() -> List[dict]:
     todo_board_id = os.environ['TRELLO_API_TODO_BOARD_ID']
@@ -30,17 +40,14 @@ def create_todo_item(title: str):
     lists = get_lists()
     to_do_list_id = get_list_id_or_throw(lists, "To Do")
     response = requests.post(f'{base_uri}/cards', params={**get_query_params(), 'name': title, 'idList': to_do_list_id})
-
-    if response.status_code != 200:
-        raise ValueError(f'Failed to create todo item for "{title}". Received status code {response.status_code}')
-    
+    response.raise_for_status()
     response_body = response.json()
     return Item(id=response_body['id'], title=title, status=ItemStatus.NOT_STARTED)
 
 def remove_item(id: str):
     response = requests.delete(f'{base_uri}/cards/{id}', params=get_query_params())
-    if response.status_code != 200:
-        raise ValueError(f'Failed to delete todo item with id "{id}"". Received status code {response.status_code}')
+    response.raise_for_status()
+
 
 def update_item(item: Item):
     lists = get_lists()
@@ -54,9 +61,7 @@ def update_item(item: Item):
     elif item.status == ItemStatus.COMPLETE: list_id_to_move_to = done_list_id
 
     response = requests.put(f'{base_uri}/cards/{item.id}', params={**get_query_params(), 'idList': list_id_to_move_to})#
-
-    if response.status_code != 200:
-        raise ValueError(f'Failed to update todo item with id "{item.id}". Received status code {response.status_code}')
+    response.raise_for_status()
 
 
 def get_items() -> List[Item]:
