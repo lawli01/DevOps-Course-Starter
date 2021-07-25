@@ -35,15 +35,29 @@ def test_index_page(mock_get_requests, client):
             response.json.return_value = testLists
             return response
         elif url == f'https://api.trello.com/1/lists/{to_do_list_id}/cards':
-            response.json.return_value = []
+            response.json.return_value = [{
+                "id": "1",
+                "name": "foo"
+            }]
             return response
         elif url == f'https://api.trello.com/1/lists/{doing_list_id}/cards':
-            response.json.return_value = []
+            response.json.return_value = [{
+                "id": "2",
+                "name": "bar"
+            }]
             return response
         elif url == f'https://api.trello.com/1/lists/{done_list_id}/cards':
-            response.json.return_value = []
+            response.json.return_value = [{
+                "id": "3",
+                "name": "blah"
+            }]
             return response
     # Replace call to requests.get(url) with our own function
     mock_get_requests.side_effect = mock_get_lists
     response = client.get('/')
-    return None
+    responseBody = response.data.decode("utf-8")
+
+    assert response.status_code is 200
+    assert "foo" in responseBody
+    assert "bar" in responseBody
+    assert "blah" in responseBody
