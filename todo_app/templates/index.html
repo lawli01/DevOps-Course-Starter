@@ -3,13 +3,13 @@
 
 {% macro renderListItem(item) %}
 <li class="list-group-item align-items-center d-flex justify-content-between">
-  <div class="justify-content-start">
+  <div aria-label="todo {{item.title}} label" class="justify-content-start">
     {{item.title}}
   </div>
   <div class="d-flex">
     <form action="todos/{{item.id}}" method="post">
       <div class="form-check mr-4 d-flex align-items-center">
-        <input class="form-check-input" type="checkbox" name="status" value="COMPLETE" onChange="this.form.submit()" {%
+        <input aria-label="todo {{item.title}} checkbox" class="form-check-input" type="checkbox" name="status" value="COMPLETE" onChange="this.form.submit()" {%
           if item.status.name=='COMPLETE' %} checked {% endif %}>
         <label class="form-check-label" for="flexCheckDefault">
           Completed
@@ -40,9 +40,9 @@
     <form action="/todos" method="post">
       <div class="mb-3">
         <label for="title" class="form-label">New Todo</label>
-        <input type="text" id="title" name="title" class="form-control" required />
+        <input aria-label="todo input box" type="text" id="title" name="title" class="form-control" required />
       </div>
-      <button type="submit" class="btn btn-primary">Add</button>
+      <button aria-label="add todo" type="submit" class="btn btn-primary">Add</button>
     </form>
   </div>
 </div>
