@@ -26,7 +26,6 @@ def client():
 def test_index_page(mock_get_requests, client):
     with open(THIS_DIR/'trello_responses/get_boards_lists.json') as jsonFile:
         testLists = json.load(jsonFile)
-        jsonFile.close()
     to_do_list_id = next(x for x in testLists if x['name'] == "To Do")["id"]
     doing_list_id = next(x for x in testLists if x['name'] == "Doing")["id"]
     done_list_id = next(x for x in testLists if x['name'] == "Done")["id"]
