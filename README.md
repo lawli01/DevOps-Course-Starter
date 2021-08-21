@@ -34,7 +34,8 @@ In the .env file you will need to add a configuration with your own trello detai
 ```
 TRELLO_API_TOKEN=[YOUR TOKEN]
 TRELLO_API_KEY=[YOUR API KEY]
-TRELLO_API_TODO_BOARD_NAME=[YOUR TODO BOARD NAME]
+# Can be found with this API https://api.trello.com/1/members/me/boards?token=TOKEN&key=KEY
+TRELLO_API_TODO_BOARD_ID=[YOUR TODO BOARD ID]
 ```
 
 The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change). There's also a [SECRET_KEY](https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY) variable which is used to encrypt the flask session cookie.
@@ -57,3 +58,21 @@ You should see output similar to the following:
  * Debugger PIN: 226-556-590
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
+
+## Running the integration and unit tests
+
+In visual studio code:
+ - Hit ctrl+shift+p and search for "Python: Discover Tests"
+ - Configure pytest as the test runner pointing to the ./tests folder
+ - Ensure you have the "Python Test Explorer for Visual Studio Code" extension installed
+ - You should be able to run the tests now using the test explorer in visual studio code
+
+ Alternatively you can just run the `pytest tests` command once you have activated the python venv
+
+ ## Running the e2e tests
+
+ Prequisites:
+  - Download and install firefox
+  - Download geckodriver and place it in the project root
+
+run `pytest tests_e2e`

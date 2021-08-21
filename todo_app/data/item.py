@@ -7,7 +7,7 @@ class ItemStatus(Enum):
     COMPLETE = 'Complete'
 
 class Item:
-    def __init__(self, id: Optional[str], title: str, status: ItemStatus, ):
+    def __init__(self, id: Optional[str], title: str, status: ItemStatus):
         self.id = id
         self.title = title
         self.status = status

@@ -1,6 +1,35 @@
 {% extends "layout.html" %}
 {% block title %}To-Do App{% endblock %}
 
+{% macro renderListItem(item) %}
+<li class="list-group-item align-items-center d-flex justify-content-between">
+  <div aria-label="todo {{item.title}} label" class="justify-content-start">
+    {{item.title}}
+  </div>
+  <div class="d-flex">
+    <form action="todos/{{item.id}}" method="post">
+      <div class="form-check mr-4 d-flex align-items-center">
+        <input aria-label="todo {{item.title}} checkbox" class="form-check-input" type="checkbox" name="status" value="COMPLETE" onChange="this.form.submit()" {%
+          if item.status.name=='COMPLETE' %} checked {% endif %}>
+        <label class="form-check-label" for="flexCheckDefault">
+          Completed
+        </label>
+      </div>
+    </form>
+    <form action="todos/{{item.id}}/delete" method="post">
+      <button type="submit" class="btn btn-danger btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
+          viewBox="0 0 16 16">
+          <path
+            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+          <path fill-rule="evenodd"
+            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+        </svg>
+      </button>
+    </form>
+</li>
+{% endmacro %}
+
 {% block content %}
 <div class="jumbotron">
   <h1 class="display-4">To-Do App</h1>
@@ -11,40 +40,27 @@
     <form action="/todos" method="post">
       <div class="mb-3">
         <label for="title" class="form-label">New Todo</label>
-        <input type="text" id="title" name="title" class="form-control" required/>
+        <input aria-label="todo input box" type="text" id="title" name="title" class="form-control" required />
       </div>
-      <button type="submit" class="btn btn-primary">Add</button>
+      <button aria-label="add todo" type="submit" class="btn btn-primary">Add</button>
     </form>
   </div>
 </div>
 <div class="row">
   <div class="col-md-12">
-    <h2>Items</h2>
+    <h2 class="mb-3">Items</h2>
     <ul class="list-group mb-4">
-      {% for item in items %}
-        <li class="list-group-item align-items-center d-flex justify-content-between">
-          <div class="justify-content-start">
-            {{item.title}}
-          </div>
-          <div class="d-flex">
-            <form action="todos/{{item.id}}" method="post">
-              <div class="form-check mr-4 d-flex align-items-center">
-                <input class="form-check-input" type="checkbox" name="status" value="Complete" onChange="this.form.submit()" {% if item.status=='Complete' %} checked {% endif %}>
-                <label class="form-check-label" for="flexCheckDefault">
-                  Completed
-                </label>
-              </div>
-            </form>
-            <form action="todos/{{item.id}}/delete" method="post">
-              <button type="submit" class="btn btn-danger btn-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                </svg>
-              </button>
-            </form>
-        </li>
-      </form>
+      <h2 class="mb-2">To Do</h2>
+      {% for item in view_model.to_do_items %}
+        {{renderListItem(item)}}
+      {% endfor %}
+      <h2 class="mt-2 mb-2">In Progress</h2>
+      {% for item in view_model.doing_items %}
+        {{renderListItem(item)}}
+      {% endfor %}
+      <h2 class="mt-2 mb-2">Done</h2>
+      {% for item in view_model.done_items %}
+        {{renderListItem(item)}}
       {% endfor %}
     </ul>
   </div>
