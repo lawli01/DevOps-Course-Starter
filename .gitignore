@@ -125,3 +125,6 @@ env/
 ## Selenium ##
 geckodriver.exe
 geckodriver.log
+
+## Vagrant ##
+.vagrant/
