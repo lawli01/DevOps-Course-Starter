@@ -76,3 +76,9 @@ In visual studio code:
   - Download geckodriver and place it in the project root
 
 run `pytest tests_e2e`
+
+## Building and running the Docker container
+
+Run:
+ - docker build --tag todo-app .
+ - docker run -p 5000:5000 --env-file ./.env todo-app
