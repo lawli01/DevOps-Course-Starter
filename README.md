@@ -80,5 +80,9 @@ run `pytest tests_e2e`
 ## Building and running the Docker container
 
 Run:
- - docker build --tag todo-app .
- - docker run -p 5000:5000 --env-file ./.env todo-app
+ - To build and run development image:
+   - docker build --target development --tag todo-app:dev .
+   - docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)"/todo_app,target=/usr/src/app/todo_app todo-app:dev
+ - To build and run production image:
+   - docker build --target production --tag todo-app:prod .
+   - docker run -p 5000:5000 --env-file ./.env todo-app:prod
