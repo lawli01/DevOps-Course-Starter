@@ -1,0 +1,12 @@
+.env
+.env.template
+.env.test
+.gitignore
+geckodriver.exe
+geckodriver.log
+README.md
+.github
+.idea
+.pytest_cache
+.venv
+.vscode
