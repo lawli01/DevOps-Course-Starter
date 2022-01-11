@@ -69,13 +69,24 @@ In visual studio code:
 
  Alternatively you can just run the `pytest tests` command once you have activated the python venv
 
- ## Running the e2e tests
+## Running the e2e tests
 
  Prequisites:
   - Download and install firefox
   - Download geckodriver and place it in the project root
 
 run `pytest tests_e2e`
+
+## Running the tests in docker
+
+Run the following to build the test image:
+ - docker build --target test --tag my-test-image .
+
+Run the following to run the unit/integration tests:
+ - docker run --env-file .env.test my-test-image tests
+
+Run the following to run the e2e tests:
+ - docker run --env-file .env my-test-image tests_e2e
 
 ## Building and running the Docker container
 
