@@ -28,4 +28,8 @@ jobs:
  publish:
    name: Publish build artifacts
    needs: build
-   run: echo "Publishing!"
+   steps:
+   -
+     name: Test
+     run: echo "Publishing!"
+     
