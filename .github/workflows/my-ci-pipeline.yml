@@ -1,0 +1,27 @@
+name: Continuous Integration
+on:
+ push:
+  paths-ignore:
+    - 'documentation/**'
+    - 'README.md'
+ pull_request:
+  paths-ignore:
+    - 'documentation/**'
+    - 'README.md'
+jobs:
+ build:
+  name: Build and test
+  runs-on: ubuntu-latest
+  steps:
+  -
+    name: Checkout 
+    uses: actions/checkout@v2
+  -
+    name: Build test container
+    run: docker build --target test --tag my-test-image .
+  -
+    name: Run unit/integration tests
+    run: docker run --env-file .env.test my-test-image tests
+  -
+    name: Run e2e tests
+    run: docker run -e TRELLO_API_KEY=${{ secrets.TRELLO_API_KEY }} -e TRELLO_API_TOKEN=${{ secrets.TRELLO_API_TOKEN }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} my-test-image tests_e2e

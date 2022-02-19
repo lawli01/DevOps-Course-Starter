@@ -3,6 +3,7 @@ import os
 from dotenv.main import find_dotenv, load_dotenv
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.firefox.options import Options
 from todo_app.app import create_app
 import pytest
 from selenium import webdriver
@@ -33,7 +34,9 @@ def app_with_temp_board():
 
 @pytest.fixture(scope="module")
 def driver():
-    with webdriver.Firefox() as driver:
+    opts = Options()
+    opts.headless = True
+    with webdriver.Firefox(options=opts) as driver:
         yield driver
 
 
