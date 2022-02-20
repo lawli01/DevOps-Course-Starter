@@ -38,6 +38,14 @@ TRELLO_API_KEY=[YOUR API KEY]
 TRELLO_API_TODO_BOARD_ID=[YOUR TODO BOARD ID]
 ```
 
+In the .env file you will need to add a configuration with your own mongo connection details:
+```
+# Example connection string: mongodb+srv://{USER}:{PASSWORD}@{HOST}
+MONGO_CONNECTION_STRING=[YOUR CONNECTION STRING]
+# This is the database where all the todo items will be stored
+MONGO_DATABASE_NAME=[YOUR MONGO DATABASE NAME]
+```
+
 The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change). There's also a [SECRET_KEY](https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY) variable which is used to encrypt the flask session cookie.
 
 ## Running the App
