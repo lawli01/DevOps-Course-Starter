@@ -16,7 +16,7 @@ COPY ./todo_app ./todo_app
 # production build stage
 FROM base as production
 EXPOSE 5000
-CMD ["gunicorn", "--workers=2", "app:create_app()", "--bind", ":5000", "--chdir", "/usr/src/app/todo_app"]  
+CMD gunicorn --workers=2 "app:create_app()" --bind 0.0.0.0:${PORT:-5000} --chdir /usr/src/app/todo_app  
 
 # local development stage
 FROM base as development
