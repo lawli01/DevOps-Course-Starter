@@ -53,12 +53,6 @@ jobs:
     name: Checkout 
     uses: actions/checkout@v2
   -
-    name: Login to heroku
-    run: heroku login -i
-  -
-    name: Login to heroku container
-    run: heroku container:login
-  -
     name: Tag build image
     run: docker tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA registry.heroku.com/todo-app-devopscourse/web
   -
