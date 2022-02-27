@@ -54,7 +54,7 @@ jobs:
     uses: actions/checkout@v2
   -
     name: Login to heroku
-    run: heroku login
+    run: heroku login -i
   -
     name: Login to heroku container
     run: heroku container:login
