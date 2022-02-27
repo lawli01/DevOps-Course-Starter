@@ -54,5 +54,17 @@ jobs:
     uses: actions/checkout@v2
   -
     name: Login to heroku
-    run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} heroku login
-     
+    run: heroku login
+  -
+    name: Login to heroku container
+    run: heroku container:login
+  -
+    name: Tag build image
+    run: docker tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA registry.heroku.com/todo-app-devopscourse/web
+  -
+    name: Push heroku tagged image
+    run: docker push registry.heroku.com/todo-app-devopscourse/web
+  -
+    name: Release to heroku
+    run: heroku container:release web
+
