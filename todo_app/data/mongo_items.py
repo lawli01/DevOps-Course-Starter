@@ -1,20 +1,19 @@
 import os
+import pymongo
 from typing import Dict, List, Optional
-from pymongo import MongoClient
 from bson.objectid import ObjectId
 from todo_app.data.item import Item, ItemStatus
 
-MONGO_CONNECTION_STRING = os.environ['MONGO_CONNECTION_STRING']
-MONGO_DATABASE_NAME = os.environ['MONGO_DATABASE_NAME']
+MONGO_CLIENT = None
 
-db = MongoClient(
-    f'{MONGO_CONNECTION_STRING}/?retryWrites=true&w=majority')[MONGO_DATABASE_NAME]
-
-ITEMS_COLLECTION = db.items
-
+def __get_items_collection():
+    global MONGO_CLIENT
+    if (MONGO_CLIENT is None):
+        MONGO_CLIENT = pymongo.MongoClient(f'{os.environ["MONGO_CONNECTION_STRING"]}/?retryWrites=true&w=majority')
+    return MONGO_CLIENT[os.environ['MONGO_DATABASE_NAME']].items
 
 def __create_todo_item(title: str):
-    id = ITEMS_COLLECTION.insert_one({
+    id = __get_items_collection().insert_one({
         "title": title,
         "status": ItemStatus.NOT_STARTED.value
     })
@@ -22,7 +21,7 @@ def __create_todo_item(title: str):
 
 
 def __remove_item(id: str):
-    ITEMS_COLLECTION.delete_one({"_id": ObjectId(id)})
+    __get_items_collection().delete_one({"_id": ObjectId(id)})
 
 
 def __update_item(item: Item):
@@ -30,7 +29,7 @@ def __update_item(item: Item):
     Updates the item in mongo
     """
 
-    ITEMS_COLLECTION.update_one({"_id": ObjectId(item.id)}, {
+    __get_items_collection().update_one({"_id": ObjectId(item.id)}, {
         "$set": {
             "title": item.title,
             "status": item.status.value
@@ -49,7 +48,7 @@ def get_items() -> List[Item]:
     Returns:
         list: The list of saved items.
     """
-    return list(map(map_doc_to_item, ITEMS_COLLECTION.find()))
+    return list(map(map_doc_to_item, __get_items_collection().find()))
 
 
 def get_item(id: str) -> Optional[Item]:

@@ -16,6 +16,7 @@ pytest = "^6.2.4"
 selenium = "^3.141.0"
 pylint = "^2.12.2"
 autopep8 = "^1.6.0"
+mongomock = "^4.0.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
