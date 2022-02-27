@@ -30,14 +30,6 @@ You'll also need to clone a new `.env` file from the `.env.template` to store lo
 $ cp .env.template .env  # (first time only)
 ```
 
-In the .env file you will need to add a configuration with your own trello details:
-```
-TRELLO_API_TOKEN=[YOUR TOKEN]
-TRELLO_API_KEY=[YOUR API KEY]
-# Can be found with this API https://api.trello.com/1/members/me/boards?token=TOKEN&key=KEY
-TRELLO_API_TODO_BOARD_ID=[YOUR TODO BOARD ID]
-```
-
 In the .env file you will need to add a configuration with your own mongo connection details:
 ```
 # Example connection string: mongodb+srv://{USER}:{PASSWORD}@{HOST}
