@@ -53,6 +53,9 @@ jobs:
     name: Checkout 
     uses: actions/checkout@v2
   -
+    name: Set heroku api token env var
+    run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }}
+  -
     name: Login to heroku
     run: heroku login
      
