@@ -24,7 +24,7 @@ jobs:
     run: docker run --env-file .env.test my-test-image tests
   -
     name: Run e2e tests
-    run: docker run -e TRELLO_API_KEY=${{ secrets.TRELLO_API_KEY }} -e TRELLO_API_TOKEN=${{ secrets.TRELLO_API_TOKEN }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} my-test-image tests_e2e
+    run: docker run -e MONGO_CONNECTION_STRING=${{ secrets.MONGO_CONNECTION_STRING }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} my-test-image tests_e2e
  publish:
   name: Publish build artifacts
   runs-on: ubuntu-latest
