@@ -47,6 +47,9 @@ jobs:
     name: Tag build image
     run: docker tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA registry.heroku.com/todo-app-devopscourse/web
   -
+    name: Login to heroku 
+    run: heroku login
+  -
     name: Login to heroku container
     run: heroku container:login
   -
