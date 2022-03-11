@@ -47,6 +47,17 @@ jobs:
     name: Tag build image
     run: docker tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA registry.heroku.com/todo-app-devopscourse/web
   -
+    name: Setup heroku login
+    run: |
+      cat >~/.netrc <<EOF
+        machine api.heroku.com
+          login ${{secrets.HEROKU_EMAIL}}
+          password ${{secrets.HEROKU_API_KEY}}
+        machine git.heroku.com
+          login ${{secrets.HEROKU_EMAIL}}
+          password ${{secrets.HEROKU_API_KEY}}
+      EOF
+  -
     name: Login to heroku
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
