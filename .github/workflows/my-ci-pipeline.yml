@@ -51,17 +51,12 @@ jobs:
     run: |
       cat >~/.netrc <<EOF
         machine api.heroku.com
-          login ${{secrets.HEROKU_EMAIL}}
-          password ${{secrets.HEROKU_API_KEY}}
+          login ${{ secrets.HEROKU_EMAIL }}
+          password ${{ secrets.HEROKU_API_KEY }}
         machine git.heroku.com
-          login ${{secrets.HEROKU_EMAIL}}
-          password ${{secrets.HEROKU_API_KEY}}
+          login ${{ secrets.HEROKU_EMAIL }}
+          password ${{ secrets.HEROKU_API_KEY }}
       EOF
-  -
-    name: Login to heroku
-    env:
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    run: heroku login
   -
     name: Login to heroku container
     run: heroku container:login
