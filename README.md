@@ -30,12 +30,12 @@ You'll also need to clone a new `.env` file from the `.env.template` to store lo
 $ cp .env.template .env  # (first time only)
 ```
 
-In the .env file you will need to add a configuration with your own trello details:
+In the .env file you will need to add a configuration with your own mongo connection details:
 ```
-TRELLO_API_TOKEN=[YOUR TOKEN]
-TRELLO_API_KEY=[YOUR API KEY]
-# Can be found with this API https://api.trello.com/1/members/me/boards?token=TOKEN&key=KEY
-TRELLO_API_TODO_BOARD_ID=[YOUR TODO BOARD ID]
+# Example connection string: mongodb+srv://{USER}:{PASSWORD}@{HOST}
+MONGO_CONNECTION_STRING=[YOUR CONNECTION STRING]
+# This is the database where all the todo items will be stored
+MONGO_DATABASE_NAME=[YOUR MONGO DATABASE NAME]
 ```
 
 The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change). There's also a [SECRET_KEY](https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY) variable which is used to encrypt the flask session cookie.

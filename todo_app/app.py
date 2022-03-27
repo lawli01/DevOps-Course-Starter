@@ -1,11 +1,19 @@
-from todo_app.data.itemsViewModel import ItemsViewModel
-from todo_app.data.item import ItemStatus
-from todo_app.data.trello_items import get_items, add_item, delete_item, get_item, save_item
 from flask import Flask, redirect, render_template, request
 from dotenv import load_dotenv
+from todo_app.data.item import ItemStatus
+from todo_app.data.mongo_items import get_item, get_items, add_item, delete_item, save_item
+from todo_app.data.itemsViewModel import ItemsViewModel
 load_dotenv()
 
+
 def create_app():
+    """
+    Create the todo app
+
+    Returns:
+        app: The flask application.
+    """
+
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
 
