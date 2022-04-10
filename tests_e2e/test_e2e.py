@@ -1,7 +1,6 @@
 import os
 
 from dotenv.main import find_dotenv, load_dotenv
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.firefox.options import Options
 from todo_app.app import create_app
@@ -9,8 +8,8 @@ import pytest
 import pymongo
 from selenium import webdriver
 from threading import Thread
-from todo_app.data.mongo_items import MONGO_CLIENT
 
+os.environ['LOGIN_DISABLED'] = 'True'
 
 @pytest.fixture(scope='module')
 def app_with_temp_db():

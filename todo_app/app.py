@@ -20,6 +20,7 @@ def create_app():
     """ 
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
+    app.config['LOGIN_DISABLED'] = os.getenv('LOGIN_DISABLED') == 'True'
 
     login_manager = LoginManager()
     oauth_client_id = os.environ['OAUTH_CLIENT_ID']
@@ -59,12 +60,14 @@ def create_app():
         return redirect('/')
 
     @app.route('/todos', methods=['POST'])
+    @login_required
     def add_todo():
         title = request.form.get('title')
         add_item(title)
         return redirect('/')
 
     @app.route('/todos/<id>', methods=['POST'])
+    @login_required
     def update_todo(id):
         status = request.form.get('status')
         item = get_item(id)
@@ -73,6 +76,7 @@ def create_app():
         return redirect('/')
 
     @app.route('/todos/<id>/delete', methods=['POST'])
+    @login_required
     def remove_todo(id):
         delete_item(id)
         return redirect('/')
