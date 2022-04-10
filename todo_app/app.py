@@ -1,5 +1,8 @@
+import os
 from flask import Flask, redirect, render_template, request
 from dotenv import load_dotenv
+from flask_login import LoginManager, login_required
+from oauthlib.oauth2 import WebApplicationClient
 from todo_app.data.item import ItemStatus
 from todo_app.data.mongo_items import get_item, get_items, add_item, delete_item, save_item
 from todo_app.data.itemsViewModel import ItemsViewModel
@@ -12,12 +15,26 @@ def create_app():
 
     Returns:
         app: The flask application.
-    """
-
+    """ 
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
 
+    login_manager = LoginManager()
+
+    @login_manager.unauthorized_handler
+    def unauthenticated():
+        client = WebApplicationClient(os.environ['OAUTH_CLIENT_ID'])
+        oauth_get_uri = client.prepare_request_uri("https://github.com/login/oauth/authorize")
+        return redirect(oauth_get_uri, code=302)
+        
+    @login_manager.user_loader
+    def load_user(user_id):
+        return None
+
+    login_manager.init_app(app) 
+
     @app.route('/')
+    @login_required
     def index():
         items = get_items()
         items_view_model = ItemsViewModel(items)
@@ -43,7 +60,6 @@ def create_app():
         return redirect('/')
 
     return app
-
 
 if __name__ == '__main__':
     create_app().run()
