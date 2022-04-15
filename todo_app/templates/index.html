@@ -7,7 +7,7 @@
     {{item.title}}
   </div>
   <div class="d-flex">
-    {% if user.role == "WRITER" %}
+    {% if (login_disabled) or (user.role == "WRITER") %}
       <form action="todos/{{item.id}}" method="post">
         <div class="form-check mr-4 d-flex align-items-center">
           <input aria-label="todo {{item.title}} checkbox" class="form-check-input" type="checkbox" name="status" value="COMPLETE" onChange="this.form.submit()" {%
@@ -37,7 +37,7 @@
   <h1 class="display-4">To-Do App</h1>
   <p class="lead">Just another to-do app.</p>
 </div>
-{% if user.role == "WRITER" %}
+{% if (login_disabled) or (user.role == "WRITER") %}
   <div class="row">
     <div class="container mb-3">
       <form action="/todos" method="post">
@@ -48,7 +48,7 @@
         <button aria-label="add todo" type="submit" class="btn btn-primary">Add</button>
       </form>
     </div>
-    </div>
+  </div>
 {% endif %}
 <div class="row">
   <div class="col-md-12">

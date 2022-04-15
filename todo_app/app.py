@@ -1,3 +1,4 @@
+from cmath import log
 from functools import wraps
 import json
 import os
@@ -19,8 +20,8 @@ def authorised_role(role):
             user_id = getattr(current_user, "id", None)
             user_role = user_id_to_role.get(str(user_id), Role.READER)
 
-            login_disabled = os.environ.get("LOGIN_DISABLED", False) 
-            if (login_disabled == False and role == Role.WRITER and user_role != Role.WRITER):
+            login_disabled = os.getenv('LOGIN_DISABLED') == 'True'
+            if (not login_disabled and role == Role.WRITER and user_role != Role.WRITER):
                 return abort(403)
             return f(*args, **kwargs)
         return decorated_function
@@ -60,8 +61,7 @@ def create_app():
     def index():
         items = get_items()
         items_view_model = ItemsViewModel(items)
-        print(current_user.__dict__)
-        return render_template('index.html', view_model=items_view_model, user=current_user)
+        return render_template('index.html', view_model=items_view_model, user=current_user, login_disabled=app.config['LOGIN_DISABLED'])
 
     @app.route('/login/callback')
     def login_callback():
