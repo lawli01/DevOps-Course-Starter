@@ -24,7 +24,7 @@ jobs:
     run: docker run --env-file .env.test my-test-image tests
   -
     name: Run e2e tests
-    run: docker run -e MONGO_CONNECTION_STRING=${{ secrets.MONGO_CONNECTION_STRING }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} my-test-image tests_e2e
+    run: docker run -e MONGO_CONNECTION_STRING=${{ secrets.MONGO_CONNECTION_STRING }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} -e OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }} -e OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }} my-test-image tests_e2e
  publish:
   name: Publish build artifacts and deploy
   runs-on: ubuntu-latest
