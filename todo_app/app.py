@@ -1,14 +1,30 @@
+from functools import wraps
+import json
 import os
 import requests
-from flask import Flask, redirect, render_template, request
+from flask import Flask, abort, redirect, render_template, request
 from dotenv import load_dotenv
-from flask_login import LoginManager, login_required, login_user
+from flask_login import LoginManager, current_user, login_required, login_user
 from oauthlib.oauth2 import WebApplicationClient
 from todo_app.data.item import ItemStatus
 from todo_app.data.mongo_items import get_item, get_items, add_item, delete_item, save_item
 from todo_app.data.itemsViewModel import ItemsViewModel
-from todo_app.data.user import User
+from todo_app.data.user import User, Role, user_id_to_role
 load_dotenv()
+
+def authorised_role(role):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            user_id = getattr(current_user, "id", None)
+            user_role = user_id_to_role.get(str(user_id), Role.READER)
+
+            login_disabled = os.environ.get("LOGIN_DISABLED", False) 
+            if (login_disabled == False and role == Role.WRITER and user_role != Role.WRITER):
+                return abort(403)
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 
 def create_app():
@@ -34,16 +50,18 @@ def create_app():
         
     @login_manager.user_loader
     def load_user(user_id):
-        return User(id=user_id)
+        return User(id=user_id, role=user_id_to_role.get(str(user_id), Role.READER))
 
     login_manager.init_app(app) 
 
     @app.route('/')
+    @authorised_role(role=Role.READER)
     @login_required
     def index():
         items = get_items()
         items_view_model = ItemsViewModel(items)
-        return render_template('index.html', view_model=items_view_model)
+        print(current_user.__dict__)
+        return render_template('index.html', view_model=items_view_model, user=current_user)
 
     @app.route('/login/callback')
     def login_callback():
@@ -60,6 +78,7 @@ def create_app():
         return redirect('/')
 
     @app.route('/todos', methods=['POST'])
+    @authorised_role(role=Role.WRITER)
     @login_required
     def add_todo():
         title = request.form.get('title')
@@ -67,6 +86,7 @@ def create_app():
         return redirect('/')
 
     @app.route('/todos/<id>', methods=['POST'])
+    @authorised_role(role=Role.WRITER)
     @login_required
     def update_todo(id):
         status = request.form.get('status')
@@ -76,6 +96,7 @@ def create_app():
         return redirect('/')
 
     @app.route('/todos/<id>/delete', methods=['POST'])
+    @authorised_role(role=Role.WRITER)
     @login_required
     def remove_todo(id):
         delete_item(id)

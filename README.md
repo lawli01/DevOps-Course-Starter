@@ -59,6 +59,8 @@ You should see output similar to the following:
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
+To edit and delete todo items you need to add your github user id to the user id to role map in users.py
+
 ## Running the integration and unit tests
 
 In visual studio code:
