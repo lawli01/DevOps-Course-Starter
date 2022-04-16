@@ -73,7 +73,8 @@ def create_app():
         client.parse_request_body_response(token_response.text)
         (get_user_url, get_user_headers, _) = client.add_token("https://api.github.com/user")
         user_response = requests.get(get_user_url, headers=get_user_headers).json()
-        user = User(id=user_response["id"])
+        user_id = user_response["id"]
+        user = User(id=user_response["id"], role=user_id_to_role.get(user_id, Role.READER))
         login_user(user)
         return redirect('/')
 
