@@ -39,13 +39,13 @@ jobs:
     run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USER }} --password-stdin
   -
     name: Build image 
-    run: docker build --target production --tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA .
+    run: docker build --target production --tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA --tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:latest .
   -
     name: Push image
     run: docker push ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA
   -
-    name: Tag build image as latest
-    run: docker tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:latest
+    name: Push image
+    run: docker push ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:latest
   -
     name: Tag build image for heroku
     run: docker tag ${{secrets.DOCKER_HUB_USER}}/devops-todoapp:$GITHUB_SHA registry.heroku.com/todo-app-devopscourse/web
