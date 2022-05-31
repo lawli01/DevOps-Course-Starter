@@ -9,7 +9,7 @@ MONGO_CLIENT = None
 def __get_items_collection():
     global MONGO_CLIENT
     if (MONGO_CLIENT is None):
-        MONGO_CLIENT = pymongo.MongoClient(f'{os.environ["MONGO_CONNECTION_STRING"]}/?retryWrites=true&w=majority')
+        MONGO_CLIENT = pymongo.MongoClient(f'{os.environ["MONGO_CONNECTION_STRING"]}')
     return MONGO_CLIENT[os.environ['MONGO_DATABASE_NAME']].items
 
 def __create_todo_item(title: str):
